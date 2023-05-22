@@ -1,15 +1,31 @@
 const database = require("./database");
 
 const getMovies = (req, res) => {
-    database
-        .query("select * from movies")
-        .then(([movies]) => {
-            res.json(movies);
-        })
-        .catch((err) => {
-            console.error(err);
-            res.status(500).send("Error retrieving data from database");
-        });
+  let sql = "select * from movies";
+  const sqlValues = [];
+  
+  if (req.query.color != null) {
+    sql += " where color = ?";
+    sqlValues.push(req.query.color);
+  
+    if (req.query.max_duration != null) {
+      sql += " and duration <= ?";
+      sqlValues.push(req.query.max_duration);
+    }
+  } else if (req.query.max_duration != null) {
+    sql += " where duration <= ?";
+    sqlValues.push(req.query.max_duration);
+  }
+
+  database
+    .query(sql, sqlValues)
+    .then(([movies]) => {
+      res.json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error retrieving data from database");
+    });
 };
 const postMovie = (req, res) => {
   const { title, director, year, color, duration } = req.body;

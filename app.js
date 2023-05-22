@@ -34,3 +34,8 @@ app.listen(port, (err) => {
 //poster des films et utilisateurs
 app.post("/api/movies", movieHandlers.postMovie);
 app.post("/api/users", userHandlers.postUser)
+
+
+//modification
+app.put("/api/movies/:id", movieHandlers.updateMovie);
+app.put("/api/users/:id", userHandlers.updateUser);
